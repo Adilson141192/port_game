@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Ortográfico</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="game-container">
+        <button id="back-to-menu" class="menu-button" aria-label="Voltar ao menu">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <header>
+            <h1>DESAFIO ORTOGRÁFICO</h1>
+            <p class="subtitle">Escolha a grafia correta da palavra!</p>
+        </header>
+
+        <main>
+            <div id="start-screen">
+                <button id="start-button" class="pulse">
+                    <i class="fas fa-play"></i> Iniciar Jogo
+                </button>
+                
+                <div id="instructions">
+                    <div class="instruction-card">
+                        <i class="fas fa-clock"></i>
+                        <p>45 segundos para responder cada pergunta!</p>
+                    </div>
+                    <div class="instruction-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <p>Fique atento às regras ortográficas</p>
+                    </div>
+                    <div class="instruction-card">
+                        <i class="fas fa-book"></i>
+                        <p>Palavras com diferentes níveis de dificuldade</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-screen" style="display:none">
+                <div class="game-header">
+                    <div id="timer" class="game-timer">
+                        <i class="fas fa-clock"></i> <span>45s</span>
+                    </div>
+                    <div id="score" class="game-score">
+                        <i class="fas fa-star"></i> <span>0</span>
+                    </div>
+                    <div id="question-counter" class="game-counter">
+                        <i class="fas fa-question"></i> <span>0/0</span>
+                    </div>
+                </div>
+
+                <div id="word-container" class="card">
+                    <div id="word">Carregando palavra...</div>
+                    <div id="phonetic" class="phonetic"></div>
+                </div>
+                
+                <div id="options" class="options-grid">
+                    <!-- Opções serão preenchidas via JavaScript -->
+                </div>
+                
+                <div id="feedback" class="feedback-card"></div>
+                <div id="animation-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

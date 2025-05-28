@@ -77,7 +77,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function init() {
         DOM.startButton.addEventListener('click', startGame);
         DOM.backButton.addEventListener('click', () => {
-            window.location.href = '../../index.html';
+            // Usando '/' para voltar à raiz do site
+            window.location.href = '/index.html';
+            
+            // Se não funcionar, tente uma das opções abaixo:
+            // window.location.href = '../../index.html'; // Volta dois níveis
+            // window.location.href = 'https://seusite.com/index.html'; // URL completa
         });
     }
 
