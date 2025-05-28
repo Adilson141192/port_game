@@ -1,198 +1,152 @@
 // Configuração do jogo
-const API_URL = "";
 const FALLBACK_SENTENCES = [
     {
         sentence: "Houveram muitos problemas na festa.",
         correct: "Houve muitos problemas na festa.",
-        explanation: "Verbo 'haver' (no sentido de existir) é impessoal (3ª pessoa do singular).",
+        explanation: "Verbo 'haver' (existir) é impessoal - use apenas 3ª pessoa do singular.",
         difficulty: "medium"
     },
     {
         sentence: "Ele assistiu o jogo na TV.",
         correct: "Ele assistiu ao jogo na TV.",
-        explanation: "'Assistir a' é regência verbal obrigatória.",
+        explanation: "Regência verbal: 'assistir a' é obrigatório.",
         difficulty: "easy"
     },
     {
         sentence: "A maioria dos alunos faltaram à prova.",
         correct: "A maioria dos alunos faltou à prova.",
-        explanation: "Com 'a maioria de', o verbo concorda com o núcleo ('maioria').",
+        explanation: "Concordância: verbo concorda com 'maioria' (singular).",
         difficulty: "hard"
+    },
+    {
+        sentence: "Vou emprestar seu livro para você.",
+        correct: "Vou te emprestar o livro.",
+        explanation: "'Emprestar' significa dar emprestado, não pegar emprestado.",
+        difficulty: "medium"
     }
 ];
 
-// Variáveis do jogo
-let sentences = [];
-let currentSentence = null;
-let score = 0;
-let timeLeft = 30;
-let timer;
-let gameActive = false;
+// Estado do jogo
+const gameState = {
+    sentences: [...FALLBACK_SENTENCES],
+    currentSentence: null,
+    score: 0,
+    timeLeft: 30,
+    timer: null,
+    isActive: false
+};
 
-// Elementos do DOM
-const elements = {
+// Elementos DOM
+const DOM = {
     startScreen: document.getElementById('start-screen'),
     gameScreen: document.getElementById('game-screen'),
     startButton: document.getElementById('start-button'),
-    loading: document.getElementById('loading'),
     sentence: document.getElementById('sentence'),
-    sentenceContainer: document.getElementById('sentence-container'),
     options: document.getElementById('options'),
     timer: document.getElementById('timer'),
-    score: document.getElementById('score'),
+    timerText: document.querySelector('#timer span'),
+    score: document.querySelector('#score span'),
     feedback: document.getElementById('feedback'),
-    animationContainer: document.getElementById('animation-container'),
-    container: document.getElementById('game-container')
+    animationContainer: document.getElementById('animation-container')
 };
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    elements.startButton.addEventListener('click', startGameFlow);
+function init() {
+    DOM.startButton.addEventListener('click', startGame);
     document.getElementById('back-to-menu').addEventListener('click', () => {
         window.location.href = '../../index.html';
     });
-});
+}
 
 // Fluxo do jogo
-function startGameFlow() {
-    elements.startScreen.style.display = 'none';
-    elements.gameScreen.style.display = 'block';
-    showLoader("Carregando frases...");
-    fetchSentences();
-}
-
-// Busca frases
-async function fetchSentences() {
-    try {
-        const response = await fetch(API_URL);
+function startGame() {
+    // Transição entre telas
+    DOM.startScreen.style.animation = 'fadeOut 0.5s forwards';
+    
+    setTimeout(() => {
+        DOM.startScreen.style.display = 'none';
+        DOM.gameScreen.style.display = 'block';
+        DOM.gameScreen.style.animation = 'fadeIn 0.5s forwards';
         
-        if (API_URL && response.ok) {
-            const data = await response.json();
-            sentences = Array.isArray(data) ? data : data.frases;
-        }
-        
-        if (!sentences || sentences.length === 0) {
-            throw new Error("Usando frases locais");
-        }
-        
-        hideLoader();
-        initializeGame();
-    } catch (error) {
-        console.log(error.message);
-        sentences = FALLBACK_SENTENCES;
-        hideLoader();
-        initializeGame();
-    }
+        resetGame();
+        loadNextSentence();
+        startTimer();
+    }, 500);
 }
 
-// Controles de loader
-function showLoader(message) {
-    elements.loading.textContent = message;
-    elements.loading.style.display = 'block';
-}
-
-function hideLoader() {
-    elements.loading.style.display = 'none';
-}
-
-// Inicia o jogo
-function initializeGame() {
-    gameActive = true;
-    resetGameState();
-    loadNextSentence();
-    startTimer();
-}
-
-// Lógica do jogo
-function resetGameState() {
-    score = 0;
-    timeLeft = 30;
-    updateScoreDisplay();
+function resetGame() {
+    gameState.score = 0;
+    gameState.timeLeft = 30;
+    gameState.isActive = true;
+    
+    updateScore();
     updateTimerDisplay();
     clearFeedback();
 }
 
+// Temporizador
 function startTimer() {
-    clearInterval(timer);
-    timer = setInterval(updateTimer, 1000);
-}
-
-function updateTimer() {
-    timeLeft--;
-    updateTimerDisplay();
-
-    if (timeLeft <= 0) {
-        clearInterval(timer);
-        endGame();
-    }
+    clearInterval(gameState.timer);
+    gameState.timer = setInterval(() => {
+        gameState.timeLeft--;
+        updateTimerDisplay();
+        
+        if (gameState.timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
 }
 
 function updateTimerDisplay() {
-    elements.timer.textContent = `Tempo: ${timeLeft}s`;
-    if (timeLeft <= 10) {
-        elements.timer.classList.add('warning');
+    DOM.timerText.textContent = `${gameState.timeLeft}s`;
+    
+    if (gameState.timeLeft <= 10) {
+        DOM.timer.classList.add('warning');
     } else {
-        elements.timer.classList.remove('warning');
+        DOM.timer.classList.remove('warning');
     }
-}
-
-function updateScoreDisplay() {
-    elements.score.textContent = `Pontos: ${score}`;
-}
-
-function clearFeedback() {
-    elements.feedback.textContent = '';
-    elements.feedback.className = '';
 }
 
 // Gerenciamento de frases
 function loadNextSentence() {
-    if (sentences.length === 0) {
-        endGame();
-        return;
-    }
-
+    if (!gameState.isActive) return;
+    
     clearFeedback();
-    currentSentence = getRandomSentence();
+    gameState.currentSentence = getRandomSentence();
     displaySentence();
-    createAnswerOptions();
+    createOptions();
 }
 
 function getRandomSentence() {
-    const randomIndex = Math.floor(Math.random() * sentences.length);
-    return sentences[randomIndex];
+    const randomIndex = Math.floor(Math.random() * gameState.sentences.length);
+    return gameState.sentences[randomIndex];
 }
 
 function displaySentence() {
-    elements.sentence.textContent = currentSentence.sentence;
-    elements.sentence.style.animation = 'none';
-    void elements.sentence.offsetHeight; // Trigger reflow
-    elements.sentence.style.animation = 'fadeIn 0.5s';
+    DOM.sentence.textContent = gameState.currentSentence.sentence;
+    DOM.sentence.style.animation = 'fadeIn 0.5s';
 }
 
-function createAnswerOptions() {
-    elements.options.innerHTML = '';
+function createOptions() {
+    DOM.options.innerHTML = '';
     
-    const correctOption = createOption(currentSentence.correct, true);
+    const correctOption = createOption(gameState.currentSentence.correct, true);
     const wrongOptions = [
-        currentSentence.sentence,
-        generateWrongOption(currentSentence.correct)
+        gameState.currentSentence.sentence,
+        generateWrongOption(gameState.currentSentence.correct)
     ].map(option => createOption(option, false));
     
-    const allOptions = [correctOption, ...wrongOptions];
-    shuffleOptions(allOptions).forEach(option => elements.options.appendChild(option));
+    shuffleArray([correctOption, ...wrongOptions]).forEach(option => {
+        DOM.options.appendChild(option);
+    });
 }
 
 function createOption(text, isCorrect) {
     const button = document.createElement('button');
-    button.textContent = text;
     button.className = 'option';
+    button.textContent = text;
     button.addEventListener('click', () => handleAnswer(isCorrect));
     return button;
-}
-
-function shuffleOptions(options) {
-    return options.sort(() => Math.random() - 0.5);
 }
 
 function generateWrongOption(correct) {
@@ -202,35 +156,35 @@ function generateWrongOption(correct) {
         "A maioria dos alunos faltou à prova.": "A maioria dos alunos faltaram a prova."
     };
     
-    return commonMistakes[correct] || 
-           correct.replace(/\b(a|o)\b/g, match => match === 'a' ? 'à' : 'ao');
+    return commonMistakes[correct] || correct.replace(/\b(a|o)\b/g, match => 
+        match === 'a' ? 'à' : 'ao');
 }
 
 // Manipulação de respostas
 function handleAnswer(isCorrect) {
-    clearInterval(timer);
+    if (!gameState.isActive) return;
+    
+    clearInterval(gameState.timer);
     
     if (isCorrect) {
-        handleCorrectAnswer();
+        handleCorrect();
     } else {
-        handleWrongAnswer();
+        handleIncorrect();
     }
-
+    
     prepareNextRound();
 }
 
-function handleCorrectAnswer() {
-    score++;
-    updateScoreDisplay();
-    showFeedback(`✅ Correto! ${currentSentence.explanation}`, 'correct');
+function handleCorrect() {
+    gameState.score++;
+    updateScore();
+    showFeedback(`✅ Correto! ${gameState.currentSentence.explanation}`, 'correct');
     createAnimation('🎉', '#4CAF50');
-    elements.sentence.classList.add('correct');
 }
 
-function handleWrongAnswer() {
-    showFeedback(`❌ Errado! O correto é: "${currentSentence.correct}". ${currentSentence.explanation}`, 'incorrect');
+function handleIncorrect() {
+    showFeedback(`❌ Errado! O correto é: "${gameState.currentSentence.correct}". ${gameState.currentSentence.explanation}`, 'incorrect');
     createAnimation('💥', '#f44336');
-    elements.sentence.classList.add('incorrect');
 }
 
 function createAnimation(emoji, color) {
@@ -238,62 +192,84 @@ function createAnimation(emoji, color) {
     anim.className = 'emoji-animation';
     anim.textContent = emoji;
     anim.style.color = color;
-    anim.style.left = `${Math.random() * 80 + 10}%`;
-    elements.animationContainer.appendChild(anim);
+    anim.style.left = `${Math.random() * 70 + 15}%`;
+    DOM.animationContainer.appendChild(anim);
     
-    setTimeout(() => {
-        anim.remove();
-    }, 1000);
-}
-
-function showFeedback(message, type) {
-    elements.feedback.textContent = message;
-    elements.feedback.className = type;
+    setTimeout(() => anim.remove(), 1000);
 }
 
 function prepareNextRound() {
-    if (timeLeft <= 0) return;
-    
     setTimeout(() => {
-        loadNextSentence();
-        startTimer();
+        if (gameState.timeLeft > 0) {
+            loadNextSentence();
+            startTimer();
+        }
     }, 2000);
 }
 
-// Finalização do jogo
+// Finalização
 function endGame() {
-    gameActive = false;
+    gameState.isActive = false;
+    clearInterval(gameState.timer);
     showFinalResults();
-    createRestartButton();
 }
 
 function showFinalResults() {
-    elements.sentence.textContent = `Fim de jogo! Pontuação: ${score}/${sentences.length}`;
-    elements.options.innerHTML = '';
+    DOM.sentence.textContent = `Fim de jogo! Pontuação: ${gameState.score}/${gameState.sentences.length}`;
+    DOM.options.innerHTML = '';
     
-    const feedbackMessage = getFeedbackMessage();
-    showFeedback(feedbackMessage, getFeedbackType());
-}
-
-function getFeedbackMessage() {
-    const percentage = (score / sentences.length) * 100;
+    const percentage = (gameState.score / gameState.sentences.length) * 100;
+    let message, className;
     
-    if (percentage >= 90) return '🎉 Excelente! Domínio total da gramática!';
-    if (percentage >= 60) return '👍 Bom trabalho! Continue praticando!';
-    return '📚 Estude mais e tente novamente!';
-}
-
-function getFeedbackType() {
-    return (score / sentences.length) >= 0.6 ? 'correct' : 'incorrect';
+    if (percentage >= 90) {
+        message = '🎉 Excelente! Domínio total!';
+        className = 'correct';
+    } else if (percentage >= 60) {
+        message = '👍 Bom trabalho! Continue praticando!';
+        className = 'correct';
+    } else {
+        message = '📚 Estude mais e tente novamente!';
+        className = 'incorrect';
+    }
+    
+    showFeedback(message, className);
+    createRestartButton();
 }
 
 function createRestartButton() {
     const button = document.createElement('button');
-    button.textContent = 'Jogar Novamente';
     button.className = 'restart';
+    button.textContent = 'Jogar Novamente';
     button.addEventListener('click', () => {
-        elements.options.innerHTML = '';
-        initializeGame();
+        DOM.gameScreen.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => {
+            DOM.gameScreen.style.display = 'none';
+            DOM.startScreen.style.display = 'flex';
+            DOM.startScreen.style.animation = 'fadeIn 0.5s forwards';
+        }, 500);
     });
-    elements.options.appendChild(button);
+    
+    DOM.options.appendChild(button);
 }
+
+// Utilitários
+function updateScore() {
+    DOM.score.textContent = gameState.score;
+}
+
+function showFeedback(message, type) {
+    DOM.feedback.textContent = message;
+    DOM.feedback.className = type;
+}
+
+function clearFeedback() {
+    DOM.feedback.textContent = '';
+    DOM.feedback.className = '';
+}
+
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+// Iniciar o jogo
+document.addEventListener('DOMContentLoaded', init);
