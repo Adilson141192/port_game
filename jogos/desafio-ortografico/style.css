@@ -8,8 +8,13 @@
     --text-dark: #333333;
     --bg-dark: rgba(0, 0, 0, 0.7);
     --card-bg: rgba(255, 255, 255, 0.1);
-    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
+
+    /* Cores de dificuldade */
+    --easy: #4CAF50;
+    --medium: #FFC107;
+    --hard: #F44336;
 }
 
 * {
@@ -59,6 +64,61 @@ header h1 {
     opacity: 0.9;
 }
 
+/* Seleção de dificuldade */
+#difficulty-selector {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#difficulty-selector h2 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.difficulty-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.difficulty-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.difficulty-btn[data-level="easy"] {
+    background-color: var(--easy);
+    color: white;
+}
+
+.difficulty-btn[data-level="medium"] {
+    background-color: var(--medium);
+    color: var(--text-dark);
+}
+
+.difficulty-btn[data-level="hard"] {
+    background-color: var(--hard);
+    color: white;
+}
+
+.difficulty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.difficulty-btn.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
 /* Tela de início */
 #start-screen {
     display: flex;
@@ -86,10 +146,11 @@ header h1 {
     justify-content: center;
 }
 
-#start-button:hover, #start-button:focus {
+#start-button:hover,
+#start-button:focus {
     background-color: #45a049;
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 #start-button.pulse {
@@ -132,7 +193,10 @@ header h1 {
     flex-wrap: wrap;
 }
 
-.game-timer, .game-score, .game-counter {
+.game-timer,
+.game-score,
+.game-counter,
+.game-difficulty {
     background-color: var(--card-bg);
     padding: 8px 15px;
     border-radius: 20px;
@@ -141,6 +205,18 @@ header h1 {
     gap: 8px;
     font-size: 1rem;
     backdrop-filter: blur(5px);
+}
+
+.game-difficulty.easy {
+    color: var(--easy);
+}
+
+.game-difficulty.medium {
+    color: var(--medium);
+}
+
+.game-difficulty.hard {
+    color: var(--hard);
 }
 
 .game-timer.warning {
@@ -192,7 +268,8 @@ button.option {
     width: 100%;
 }
 
-button.option:hover, button.option:focus {
+button.option:hover,
+button.option:focus {
     background-color: #2980b9;
     transform: translateY(-3px);
     box-shadow: var(--shadow);
@@ -228,7 +305,7 @@ button.option:hover, button.option:focus {
     position: absolute;
     top: 15px;
     left: 15px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
     width: 40px;
@@ -242,8 +319,9 @@ button.option:hover, button.option:focus {
     font-size: 1rem;
 }
 
-.menu-button:hover, .menu-button:focus {
-    background: rgba(255,255,255,0.4);
+.menu-button:hover,
+.menu-button:focus {
+    background: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
 
@@ -260,7 +338,8 @@ button.restart {
     transition: var(--transition);
 }
 
-button.restart:hover, button.restart:focus {
+button.restart:hover,
+button.restart:focus {
     background-color: #2980b9;
     transform: translateY(-3px);
 }
@@ -275,25 +354,71 @@ button.restart:hover, button.restart:focus {
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100px) scale(0.5);
+        opacity: 0;
+    }
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-5px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(5px);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 }
 
 /* ===== MEDIA QUERIES ===== */
@@ -301,11 +426,11 @@ button.restart:hover, button.restart:focus {
     #game-container {
         padding: 20px;
     }
-    
+
     #word {
         font-size: 2.2rem;
     }
-    
+
     .phonetic {
         font-size: 1.2rem;
     }
@@ -315,17 +440,25 @@ button.restart:hover, button.restart:focus {
     body {
         padding: 20px;
     }
-    
+
     #game-container {
         max-width: 500px;
     }
-    
+
     .options-grid {
         grid-template-columns: 1fr 1fr;
     }
-    
+
     #start-button {
         font-size: 1.2rem;
+    }
+
+    .difficulty-options {
+        gap: 15px;
+    }
+
+    .difficulty-btn {
+        padding: 12px 20px;
     }
 }
 
@@ -334,20 +467,68 @@ button.restart:hover, button.restart:focus {
         max-width: 600px;
         padding: 25px;
     }
-    
+
     header h1 {
         font-size: 2.2rem;
     }
-    
+
     #word {
         font-size: 2.5rem;
     }
-    
+
     .phonetic {
         font-size: 1.3rem;
     }
-    
+
     .instruction-card {
         font-size: 1.05rem;
+    }
+}
+
+.menu-button.hidden {
+    display: none;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.button-container button.restart {
+    margin-top: 0;
+}
+
+.menu-button.back-to-main {
+    left: 65px;
+    /* Posiciona ao lado do botão de voltar normal */
+}
+
+.menu-button.back-to-main.hidden {
+    display: none;
+}
+
+/* Ajuste para mobile */
+@media (max-width: 400px) {
+    .menu-button.back-to-main {
+        left: 60px;
+    }
+}
+
+/* Botão voltar para o menu principal */
+.menu-button.back-to-main {
+    left: 65px;
+    /* Posiciona ao lado do botão de voltar normal */
+}
+
+.menu-button.back-to-main.hidden {
+    display: none;
+}
+
+/* Ajuste para mobile */
+@media (max-width: 400px) {
+    .menu-button.back-to-main {
+        left: 60px;
     }
 }
