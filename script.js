@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.style.animation = '';
                 }, 500);
                 
-                // Modal ou toast seria melhor, mas usamos alert como fallback
                 alert('Jogo em desenvolvimento! Em breve disponível.');
             }
         });
@@ -55,6 +54,16 @@ style.textContent = `
         0%, 100% { transform: translateX(0); }
         20%, 60% { transform: translateX(-5px); }
         40%, 80% { transform: translateX(5px); }
+    }
+    
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+    
+    @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: var(--secondary) }
     }
 `;
 document.head.appendChild(style);

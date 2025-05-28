@@ -7,7 +7,6 @@
     --shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Reset e Base */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -29,7 +28,6 @@ body {
     padding: 15px;
 }
 
-/* Header */
 .header {
     text-align: center;
     margin: 20px 0 30px;
@@ -43,7 +41,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Menu Mobile */
 .menu-toggle {
     display: block;
     position: fixed;
@@ -67,7 +64,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Grid de Jogos */
 .games-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -150,7 +146,6 @@ body {
     text-align: center;
 }
 
-/* Footer */
 footer {
     text-align: center;
     margin-top: 40px;
@@ -159,7 +154,6 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Media Queries para telas maiores */
 @media (min-width: 600px) {
     .container {
         max-width: 1200px;
@@ -188,15 +182,4 @@ footer {
     .game-card {
         padding: 25px;
     }
-}
-
-/* Animação de digitação */
-@keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: var(--secondary) }
 }

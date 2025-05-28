@@ -54,7 +54,7 @@ const DOM = {
 function init() {
     DOM.startButton.addEventListener('click', startGame);
     document.getElementById('back-to-menu').addEventListener('click', () => {
-        window.location.href = '../../index.html';
+    window.location.href = '../../index.html';
     });
 }
 
