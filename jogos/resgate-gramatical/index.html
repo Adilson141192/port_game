@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resgate Gramatical</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <button id="back-to-menu" class="menu-button">← Voltar</button>
+        <h1>RESGATE GRAMATICAL</h1>
+        <p>Encontre e corrija o erro em cada frase!</p>
+        
+        <div id="start-screen">
+            <button id="start-button">Iniciar Jogo</button>
+            <div id="instructions">
+                <h3>Como Jogar:</h3>
+                <p>Leia a frase e selecione a versão correta</p>
+                <p>Você tem 30 segundos para acertar o máximo!</p>
+            </div>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <p id="loading" style="display: none;"></p>
+            <div id="timer">Tempo: 30s</div>
+            <div id="score">Pontos: 0</div>
+            
+            <div id="sentence-container">
+                <div id="sentence">Carregando...</div>
+            </div>
+            
+            <div id="options">
+                <!-- Opções serão preenchidas via JavaScript -->
+            </div>
+            
+            <div id="feedback"></div>
+            <div id="animation-container"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
