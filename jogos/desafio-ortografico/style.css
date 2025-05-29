@@ -224,6 +224,11 @@ header h1 {
     animation: pulse 1s infinite;
 }
 
+.game-timer.critical {
+    color: var(--incorrect);
+    animation: pulse 0.5s infinite;
+}
+
 /* Cartões de palavra */
 .card {
     background-color: var(--card-bg);
@@ -239,12 +244,14 @@ header h1 {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 5px;
+    min-height: 3rem;
 }
 
 .phonetic {
     font-size: 1.1rem;
     opacity: 0.8;
     font-style: italic;
+    min-height: 1.2rem;
 }
 
 /* Dicas */
@@ -281,6 +288,8 @@ header h1 {
     line-height: 1.4;
     text-align: left;
     border-left: 3px solid var(--warning);
+    max-height: 150px;
+    overflow-y: auto;
 }
 
 .hint-content.hidden {
@@ -306,6 +315,10 @@ button.option {
     transition: var(--transition);
     text-align: center;
     width: 100%;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button.option:hover,
@@ -412,6 +425,12 @@ button.restart:hover {
     100% { transform: scale(1); }
 }
 
+@keyframes pulseFast {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .emoji-animation {
     position: absolute;
     font-size: 2rem;
@@ -435,6 +454,22 @@ button.restart:hover {
 .back-to-main {
     left: auto;
     right: 15px;
+}
+
+/* Progresso do jogo */
+.progress-container {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin: 15px 0;
+    height: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(to right, var(--easy), var(--secondary));
+    transition: width 0.5s ease;
 }
 
 /* Responsividade */
@@ -470,6 +505,19 @@ button.restart:hover {
     .instruction-card {
         font-size: 1rem;
     }
+    
+    #word {
+        font-size: 2.5rem;
+    }
+    
+    .options-grid {
+        gap: 15px;
+    }
+    
+    button.option {
+        padding: 20px;
+        font-size: 1.1rem;
+    }
 }
 
 /* Acessibilidade */
@@ -480,4 +528,77 @@ button:focus {
 
 [aria-hidden="true"] {
     display: none;
+}
+
+/* Estatísticas */
+.stats-container {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.stats-container h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--secondary);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.stat-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.stat-card i {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    color: var(--secondary);
+}
+
+.stat-card strong {
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-timer,
+    .game-score,
+    .game-counter,
+    .game-difficulty {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    #word {
+        font-size: 1.8rem;
+    }
 }
